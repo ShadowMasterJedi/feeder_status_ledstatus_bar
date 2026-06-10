@@ -1,0 +1,21 @@
+# Feeder Status LED Bar — eksempelkonfiguration
+
+moonraker:
+  host: pi3feeder.local
+  port: 7125
+
+led:
+  count: 12
+  pin: 18          # GPIO18 / PWM0
+  brightness: 64   # 0–255
+  freq_hz: 800000
+
+sensors:
+  downstream: filament_switch_sensor filament_sensor
+
+colors:
+  ready: [0, 128, 0]
+  standby: [128, 128, 0]
+  runout: [255, 0, 0]
+  offline: [0, 0, 0]
+  printing: [0, 0, 128]
