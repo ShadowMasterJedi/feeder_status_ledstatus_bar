@@ -30,6 +30,10 @@ pi3feeder (Pi 3, Klipper)          Pi Zero 2 W (dette projekt)
 
 Farver og mønstre konfigureres i `config.yaml`.
 
+## Indkøb
+
+Komplet indkøbsliste (begge Pi Zero-projekter): **[docs/bom.md](docs/bom.md)**
+
 ## Hardware
 
 | Komponent | Antal | Note |
