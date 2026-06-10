@@ -1,6 +1,8 @@
 # Feeder Status LED Bar
 
-Visuel status-bar for **Dual Filament System** — en Raspberry Pi Zero 2 W styrer WS2812/NeoPixel-LED'er baseret på live-data fra `pi3feeder` (Moonraker/Klipper).
+Visuel status-enhed for **Dual Filament System** — en **ESP32** viser feeder-status, spolevægt og rumklima baseret på live-data fra `pi3feeder` (Moonraker/Klipper).
+
+> **Opdateret juni 2026:** Host skiftet fra Pi Zero 2 W til ESP32. Se **[delivery_summary.md](delivery_summary.md)** for fuld status og teknologivalg.
 
 Del af økosystemet omkring [Dual-Filament-System-P1S](https://github.com/ShadowMasterJedi/Dual-Filament-System-P1S).
 
@@ -9,13 +11,15 @@ Del af økosystemet omkring [Dual-Filament-System-P1S](https://github.com/Shadow
 Et hurtigt **perifert blik** ved printerbænken: Er feederen klar? Er der filament? Er der runout? Ingen browser, ingen Mainsail — bare farver.
 
 ```
-pi3feeder (Pi 3, Klipper)          Pi Zero 2 W (dette projekt)
-        │                                    │
-        │  Moonraker WebSocket :7125         │
-        └──────────────┬─────────────────────┘
-                       │
-                 WS2812 LED-bar
-              (grøn / gul / rød / blå)
+pi3feeder (Pi 3, Klipper)              feedled (ESP32)
+        │                                       │
+        │  Moonraker :7125                      │
+        └──────────────────┬────────────────────┘
+                           │
+         ┌─────────────────┼─────────────────┐
+         ▼                 ▼                 ▼
+   WS2812 LED-bar    SSD1306 OLED      Web :80
+   (grøn/gul/rød)    vægt + klima
 ```
 
 ## Status-koder (LED)
@@ -38,25 +42,25 @@ Komplet indkøbsliste (begge Pi Zero-projekter): **[docs/bom.md](docs/bom.md)**
 
 | Komponent | Antal | Note |
 |-----------|-------|------|
-| Raspberry Pi Zero 2 W | 1 | Pi OS Lite, 8 GB SD er nok |
-| WS2812B LED-strip eller ring | 8–16 LED | 5V, data på GPIO18 |
-| 5V strømforsyning | 1 | Delt med LED (ikke fra Pi 5V-pin alene ved mange LED) |
-| 330 Ω modstand | 1 | Data-linje (anbefalet) |
-| Jumper-ledninger | — | Pi GPIO → DIN på strip |
+| ESP32 DevKit (CH340) | 1 | Host — PlatformIO firmware |
+| HX711 + load cell | 2 | Spool A + B vægt |
+| SSD1306 OLED 0,96" I2C | 1 | Status + gram/meter |
+| BME280 | 1 | Rum-temp + fugt (anbefalet) |
+| WS2812B LED-strip | 8–16 LED | 5V, data på GPIO18 |
+| 5V strømforsyning | 1 | Til LED-strip |
+| 330 Ω modstand | 1 | LED data-linje |
 
-**GPIO (standard):** Data = GPIO18 (PWM0), GND fælles med PSU.
+**GPIO:** Se `delivery_summary.md` for komplet kort.
 
-## Software (planlagt)
+## Software
 
-- Python 3 + `rpi_ws281x` (LED)
-- Moonraker WebSocket-klient (samme RPC-mønster som Dual-Filament dashboard)
-- Abonnerer på: `webhooks`, `filament_switch_sensor filament_sensor`, `gcode_macro _FEEDER_VARS`
+- **PlatformIO** + Arduino (`firmware/esp32/`)
+- Moonraker REST-klient → `pi3feeder` (`192.168.50.14:7125`)
+- WiFi, NTP, web-dashboard (v0.3 kører)
+- HX711 + OLED + BME280 (v1.0 — efter moduler ankommer)
 
 ```bash
-# Eksempel — når implementeret
-sudo apt install python3-pip
-pip3 install rpi-ws281x websocket-client pyyaml
-python3 feeder_led.py
+WIFI_PASSWORD='...' bash firmware/esp32/flash.sh
 ```
 
 ## Konfiguration
@@ -80,23 +84,25 @@ sensors:
 
 ## Opsætning
 
-1. Flash Pi OS Lite på Pi Zero 2 W (8 GB SD)
-2. WiFi + hostname, fx `feederled.local` — brug `configure_pi_wifi.sh` fra Dual-Filament-repo
-3. Klon dette repo på Zero'en
-4. Tilslut LED-strip, test med `python3 feeder_led.py --test`
-5. Kør som systemd-service (`feeder-led.service`)
+1. Klon repo, installér PlatformIO (`pip install platformio`)
+2. Flash ESP32: `WIFI_PASSWORD='...' bash firmware/esp32/flash.sh`
+3. Åbn web-dashboard på ESP32'ens IP (vises på seriel)
+4. Tilslut HX711, OLED, BME280, LED-strip (se `delivery_summary.md`)
+5. Kalibrér vægt via web `/calibrate` (v1.0)
 
 ## Relation til Dual Filament
 
 | System | Rolle |
 |--------|-------|
 | `pi3feeder` (Pi 3) | Klipper-host, S6, feedere — **uændret** |
-| `feederled` (Pi Zero) | Kun status-visning — læser, styrer ikke feedere |
+| `feedled` (ESP32) | Status, vægt, klima — læser, styrer ikke feedere |
 
 ## Status
 
-🚧 **Fase:** Projektbeskrivelse / tidlig udvikling  
-Ingen produktionskode endnu — README og arkitektur først.
+🚧 **Fase:** ESP32 firmware v0.3 kører (WiFi + tid + vejr)  
+⏳ **Næste:** v1.0 med HX711 + OLED + BME280 når moduler ankommer  
+
+Se **[delivery_summary.md](delivery_summary.md)** for komplet overblik.
 
 ## Licens
 

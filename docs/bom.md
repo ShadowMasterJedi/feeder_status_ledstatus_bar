@@ -42,7 +42,7 @@ Estimerede priser i **DKK** (Amazon.de / danske shops, juni 2026).
 
 | Pi | Hostname | Projekt |
 |----|----------|---------|
-| Pi #1 | `feederled.local` | LED Bar |
+| Pi #1 | `feedled.local` | LED Bar |
 | Pi #2 | `spooltrack.local` | Spool Weight Tracker |
 
 ---
@@ -105,7 +105,7 @@ SKAL KØBES
 [ ] microSD 8 GB                         ×1  (anden Pi)
 [ ] micro-USB PSU 5V 2,5A                ×1–2
 
-LED BAR (Pi #1 → feederled)
+LED BAR (Pi #1 → feedled)
 [ ] WS2812B strip ~0,5 m
 [ ] 5V PSU til LED (2A+)
 [ ] 330 Ω modstand
