@@ -1,5 +1,6 @@
 config.yaml
 firmware/esp32/wifi_secrets.h
+firmware/esp32_mqtt_test/wifi_secrets.h
 firmware/esp32/.pio/
 __pycache__/
 *.pyc
