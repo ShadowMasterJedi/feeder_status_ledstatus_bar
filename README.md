@@ -58,10 +58,23 @@ Komplet indkøbsliste (begge Pi Zero-projekter): **[docs/bom.md](docs/bom.md)**
 - Moonraker REST-klient → `pi3feeder` (`192.168.50.14:7125`)
 - WiFi, NTP, web-dashboard (v0.3 kører)
 - HX711 + OLED + BME280 (v1.0 — efter moduler ankommer)
+- **MQTT-prototype** med web-dashboard (v2.0 forberedelse) — se nedenfor
 
 ```bash
 WIFI_PASSWORD='...' bash firmware/esp32/flash.sh
 ```
+
+## MQTT + web-dashboard (prototype)
+
+Grafisk filament-monitor (temp, fugt, gram tilbage) — kører på NUC til test, genbruges ved fase 2 MQTT:
+
+```bash
+pip3 install -r tools/mqtt_test/requirements.txt
+bash tools/mqtt_test/run_web.sh
+# → http://<NUC-IP>:8765/
+```
+
+Se [`tools/mqtt_test/README.md`](tools/mqtt_test/README.md) · design/UI i `tools/mqtt_test/web_dashboard.py`
 
 ## Konfiguration
 

@@ -143,7 +143,19 @@ pi3feeder (Pi 3, Klipper)                    feedled (ESP32)
 | v0.3 | NTP atomur + 5-dages vejr (Open-Meteo) | ✅ Flashet — kører nu |
 | **v1.0** | HX711 ×2 + OLED + BME280 + LED-bar + Moonraker | ⏳ Efter HX711 ankommer |
 | v1.1 | Web `/calibrate` + NVS kalibrering | ⏳ Planlagt |
-| v2.0 | MQTT / OTA / mDNS `feedled.local` | ⏳ Fase 2 |
+| v2.0 | MQTT / OTA / mDNS `feedled.local` | 🧪 Prototype klar (NUC) |
+| v2.0-web | Filament-dashboard (Spool A/B, ring-diagram) | ✅ `tools/mqtt_test/web_dashboard.py` |
+
+### Repo-filer (MQTT-prototype)
+
+| Fil | Indhold |
+|-----|---------|
+| `tools/mqtt_test/run_web.sh` | Broker + simulator + web på port **8765** |
+| `tools/mqtt_test/web_dashboard.py` | Grafisk UI (temp, RH, remaining g) |
+| `tools/mqtt_test/filament_simulator.py` | `feedled/box1` + `box2` MQTT-emner |
+| `firmware/esp32_mqtt_test/` | ESP32 node der lytter på MQTT |
+
+Start på NUC: `bash tools/mqtt_test/run_web.sh` → `http://192.168.50.119:8765/`
 
 ### Repo-filer (firmware)
 
@@ -202,14 +214,15 @@ WIFI_PASSWORD='...' bash firmware/esp32/flash.sh
 - [ ] Implementér v1.0 firmware
 - [ ] Monter WS2812 ved printerbænk
 - [ ] Opdatér `docs/bom.md` med ESP32-host (erstatter Pi Zero #1)
-- [ ] Fase 2: MQTT til Home Assistant
+- [ ] Fase 2: MQTT til Home Assistant (UI-prototype findes i `tools/mqtt_test/`)
 
 ---
 
 ## Session-noter
 
 - **10. juni 2026**: Projekt pivoteret fra Pi Zero → ESP32. CH340 USB-serial fix (BRLTTY fjernet på NUC). Firmware v0.1–v0.3 flashet fra `linuxrobot`. Dashboard live på `http://192.168.50.123`. 5× load cell købt, 2× HX711 bestilt (ankomst ~5 dage). Beslutning: samlet feedled + spool-tracker på én ESP32.
+- **11. juni 2026**: MQTT filament-test på NUC med simulator + grafisk web-dashboard (Spool A/B). Committet til GitHub — genbrug ved v2.0.
 
 ---
 
-*Sidst opdateret: 10. juni 2026*
+*Sidst opdateret: 11. juni 2026*
